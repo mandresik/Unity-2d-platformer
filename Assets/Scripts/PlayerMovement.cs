@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -14,12 +15,15 @@ public class PlayerMovement : MonoBehaviour
     private float dirX = 0f;
     private float eps = 0.1f;
 
+    private bool hasDoubleJump;
+    private bool isDoubleJumping;
+
     [SerializeField] private float jumpHeight;
     [SerializeField] private float speed;
 
     [SerializeField] private LayerMask layerGround;
 
-    private enum Movement { idle, running, jumping, falling }
+    private enum Movement { idle, running, jumping, falling, doubleJumping }
 
     // Start is called before the first frame update
     private void Start()
@@ -28,15 +32,18 @@ public class PlayerMovement : MonoBehaviour
         collider = GetComponent<BoxCollider2D>();
         sprite = GetComponent<SpriteRenderer>();    
         animator = GetComponent<Animator>();
+
+        hasDoubleJump = true;
+        isDoubleJumping = false;
     }
 
     // Update is called once per frame
     private void Update()
     {
-        // handle running of player
+        // handles running of player
         HorizontalMovement();
 
-        // handle jumping of player
+        // handles jumping of player
         VerticalMovement();
 
         // update player's animation
@@ -53,9 +60,29 @@ public class PlayerMovement : MonoBehaviour
     // sets velocity in y axis
     private void VerticalMovement()
     {
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+        // vertical upward movement 
+        // player must use Jump button + one of two following conditions must be met
+        // 1) AND is grounded
+        // or
+        // 2) AND has jumped but not double jumped and is still in jumping movement (not falling movement)
+        if (Input.GetButtonDown("Jump") && (IsGrounded() || (hasDoubleJump && rigidBody.velocity.y > eps)))
         {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpHeight);
+
+            // whenever grounded, player can double jump after jumping
+            // but isDoubleJumping is set to false for the jumping animation
+            if (IsGrounded())
+            {
+                hasDoubleJump = true;
+                isDoubleJumping = false;
+            }
+            
+            // player has already jumped and has one more jump ... double jumping  
+            if( ! IsGrounded() && hasDoubleJump)
+            {           
+                hasDoubleJump = false;
+                isDoubleJumping = true;
+            }
         }
     }
 
@@ -84,8 +111,8 @@ public class PlayerMovement : MonoBehaviour
 
         if(rigidBody.velocity.y > eps)
         {
-            // jumping movement
-            movement = Movement.jumping;
+            // upwards jumping or double jumping movement
+            movement = isDoubleJumping ? Movement.doubleJumping : Movement.jumping;
         }
         else if(rigidBody.velocity.y < -eps)
         {
@@ -93,8 +120,7 @@ public class PlayerMovement : MonoBehaviour
             movement = Movement.falling;
         }
 
-           animator.SetInteger("movement", (int) movement);
-    //    Debug.Log(movement);
+        animator.SetInteger("movement", (int) movement);
     }
 
     // returns true if player collides with ground
