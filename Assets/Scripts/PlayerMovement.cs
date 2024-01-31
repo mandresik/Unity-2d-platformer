@@ -26,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
 
     private enum Movement { idle, running, jumping, falling, doubleJumping }
 
+    [SerializeField] private AudioSource soundJump;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -69,6 +71,8 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump") && (IsGrounded() || (hasDoubleJump && rigidBody.velocity.y > eps)))
         {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpHeight);
+
+            soundJump.Play();
 
             // whenever grounded, player can double jump after jumping
             // but isDoubleJumping is set to false for the jumping animation

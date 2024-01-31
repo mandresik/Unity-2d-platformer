@@ -6,7 +6,9 @@ using UnityEngine.SceneManagement;
 public class PlayerLife : MonoBehaviour
 {
     private Rigidbody2D rigidBody; 
-    private Animator animator;    
+    private Animator animator;
+
+    [SerializeField] private AudioSource soundDeath;
 
     private void Start()
     {
@@ -24,6 +26,7 @@ public class PlayerLife : MonoBehaviour
 
     private void PlayerDeath()
     {
+        soundDeath.Play();
         rigidBody.bodyType = RigidbodyType2D.Static;
         animator.SetTrigger("death");
     }
