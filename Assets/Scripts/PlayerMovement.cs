@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -32,18 +33,33 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        dirX = Input.GetAxisRaw("Horizontal");
-        rigidBody.velocity = new Vector2(dirX * speed, rigidBody.velocity.y);
+        // handle running of player
+        HorizontalMovement();
 
-        if(Input.GetButtonDown("Jump") && IsGrounded())
-        {
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpHeight);
-        }
+        // handle jumping of player
+        VerticalMovement();
 
-        // update animation
+        // update player's animation
         AnimationUpdate();
     }
 
+    // sets velocity in x axis
+    private void HorizontalMovement()
+    {
+        dirX = Input.GetAxisRaw("Horizontal");
+        rigidBody.velocity = new Vector2(dirX * speed, rigidBody.velocity.y);
+    }
+
+    // sets velocity in y axis
+    private void VerticalMovement()
+    {
+        if (Input.GetButtonDown("Jump") && IsGrounded())
+        {
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpHeight);
+        }
+    }
+
+    // updates animation of player
     private void AnimationUpdate()
     {
         Movement movement;
@@ -77,9 +93,11 @@ public class PlayerMovement : MonoBehaviour
             movement = Movement.falling;
         }
 
-        animator.SetInteger("movement", (int) movement);
+           animator.SetInteger("movement", (int) movement);
+    //    Debug.Log(movement);
     }
 
+    // returns true if player collides with ground
     private bool IsGrounded()
     {
         return Physics2D.BoxCast(collider.bounds.center, collider.bounds.size, 0f, Vector2.down, eps, layerGround);
