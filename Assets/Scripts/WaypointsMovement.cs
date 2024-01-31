@@ -12,12 +12,17 @@ public class WaypointsMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector2.Distance(waypoints[index].transform.position, transform.position) < 0.1f)
+        if(waypoints.Length != 0)
         {
-            index++;
-            index %= waypoints.Length;
-        }
+            if (Vector2.Distance(waypoints[index].transform.position, transform.position) < 0.1f)
+            {
+                index++;
+                index %= waypoints.Length;
 
-        transform.position = Vector2.MoveTowards(transform.position, waypoints[index].transform.position, speed * Time.deltaTime);
+                
+            }
+
+            transform.position = Vector2.MoveTowards(transform.position, waypoints[index].transform.position, speed * Time.deltaTime);
+        }
     }
 }
