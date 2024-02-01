@@ -5,18 +5,37 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private AudioSource soundButton;
     public void LevelMenu()
     {
-        SceneManager.LoadScene("Level Menu");
+        soundButton.Play();
+        Invoke("DoLevelMenu", .25f);
     }
 
     public void About()
     {
-        SceneManager.LoadScene("About");
+        soundButton.Play();
+        Invoke("DoAbout", .25f);
     }
 
     public void Quit()
     {
-        Application.Quit(); 
+        soundButton.Play();
+        Invoke("DoQuit", .25f);
+    }
+
+    private void DoLevelMenu()
+    {
+        SceneManager.LoadScene("Level Menu");
+    }
+
+    private void DoAbout()
+    {
+        SceneManager.LoadScene("About");
+    }
+
+    private void DoQuit()
+    {
+        Application.Quit();
     }
 }

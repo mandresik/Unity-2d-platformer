@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,6 +8,8 @@ public class LevelMenu : MonoBehaviour
 {
     public Button[] buttons;
     public GameObject levelButtons;
+
+    [SerializeField] private AudioSource soundButton;
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class LevelMenu : MonoBehaviour
 
     public void OpenLevel(int levelId)
     {
+        soundButton.Play();
         string levelName = "Level " + levelId.ToString();
         SceneManager.LoadScene(levelName);
     }
@@ -45,7 +47,13 @@ public class LevelMenu : MonoBehaviour
 
     public void Menu()
     {
-        SceneManager.LoadScene("Main Menu");
+        soundButton.Play();
+        Invoke("MainMenu", .25f);
+        
     }
 
+    private void MainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
+    }
 }
