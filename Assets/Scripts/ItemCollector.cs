@@ -26,7 +26,8 @@ public class ItemCollector : MonoBehaviour
     {
         bestTime = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name, 1000);
         bestTimeText.text = "Level " + levelId.ToString() + " BEST: " + bestTime.ToString();
-        startTime = Time.time;        
+        startTime = Time.time;
+        orangesText.text = "Oranges: " + oranges.ToString();
     }
 
     private void Update()

@@ -9,6 +9,7 @@ public class About : MonoBehaviour
 
     public void Menu()
     {
+        // PlayerPrefs.DeleteAll();
         soundButton.Play();
         Invoke("DoMenu", .25f);
     }
